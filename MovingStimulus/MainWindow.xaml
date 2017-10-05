@@ -1,0 +1,51 @@
+﻿<Window x:Class="MovingStimulus.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:MovingStimulus"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="350" Width="525">
+    <Window.Resources>
+        <local:RatioConverter x:Key="RatioConverter"/>
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+    </Window.Resources>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="24"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Grid >
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <ComboBox VerticalAlignment="Center"
+                      Width="120"
+                      HorizontalAlignment="Left"
+                      ItemsSource="{Binding StrategySelector.AvailableStrategies, UpdateSourceTrigger=PropertyChanged}" 
+                      SelectedItem="{Binding StrategySelector.CurrentStrategy, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"/>
+            <TextBlock TextAlignment="Left" HorizontalAlignment="Left" Grid.Column="1" VerticalAlignment="Center">Delay:</TextBlock>
+            <Slider  Grid.Column="2" HorizontalAlignment="Stretch" VerticalAlignment="Center" Value="{Binding Delay}" IsSnapToTickEnabled="True" Interval="50" Maximum="5000" Minimum="50"></Slider>
+        </Grid>
+        <Canvas Grid.Row="1" Background="WhiteSmoke" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" 
+                Name="MainWindowRoot">
+            <Ellipse Visibility="{Binding Stimulus.IsVisible, Converter={StaticResource BooleanToVisibilityConverter}}" Fill="OrangeRed" Width="50" Height="50">
+                <Canvas.Left>
+                    <MultiBinding Converter="{StaticResource RatioConverter}">
+                        <Binding Path="Stimulus.X"/>
+                        <Binding ElementName="MainWindowRoot" Path="ActualWidth"></Binding>
+                    </MultiBinding>
+                </Canvas.Left>
+                <Canvas.Top>
+                    <MultiBinding Converter="{StaticResource RatioConverter}">
+                        <Binding Path="Stimulus.Y"/>
+                        <Binding ElementName="MainWindowRoot" Path="ActualHeight"></Binding>
+                    </MultiBinding>
+                </Canvas.Top>
+            </Ellipse>
+        </Canvas>
+    </Grid>
+    
+</Window>
